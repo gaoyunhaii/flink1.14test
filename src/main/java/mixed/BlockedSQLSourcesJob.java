@@ -28,6 +28,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
@@ -40,10 +41,14 @@ import static org.apache.flink.table.api.Expressions.$;
 public class BlockedSQLSourcesJob {
 
     public static void main(String[] args) throws Exception {
+//        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+//        env.setParallelism(4);
+//        env.setRuntimeMode(RuntimeExecutionMode.BATCH);
+//        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(4);
-        env.setRuntimeMode(RuntimeExecutionMode.BATCH);
-        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        StreamTableEnvironment tableEnv =
+            StreamTableEnvironment.create(env, EnvironmentSettings.inBatchMode());
 
         // Add a sample order table
         tableEnv.executeSql(

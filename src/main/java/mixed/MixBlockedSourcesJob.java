@@ -18,7 +18,6 @@
 
 package mixed;
 
-import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.JoinFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -30,6 +29,7 @@ import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.api.operators.StreamSource;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
@@ -40,10 +40,15 @@ import sources.TypeStatSource;
 public class MixBlockedSourcesJob {
 
     public static void main(String[] args) throws Exception {
+        //        StreamExecutionEnvironment env =
+        // StreamExecutionEnvironment.getExecutionEnvironment();
+        //        env.setParallelism(4);
+        //        env.setRuntimeMode(RuntimeExecutionMode.BATCH);
+        //        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(4);
-        env.setRuntimeMode(RuntimeExecutionMode.BATCH);
-        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        StreamTableEnvironment tableEnv =
+                StreamTableEnvironment.create(env, EnvironmentSettings.inBatchMode());
 
         // Add a sample order table
         tableEnv.executeSql(

@@ -33,6 +33,7 @@ import org.apache.flink.streaming.api.operators.StreamSource;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
+import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
@@ -50,10 +51,14 @@ import java.util.concurrent.TimeUnit;
 public class BlockedDataStreamSourcesJob {
 
     public static void main(String[] args) throws Exception {
+//        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+//        env.setParallelism(4);
+//        env.setRuntimeMode(RuntimeExecutionMode.BATCH);
+//        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(4);
-        env.setRuntimeMode(RuntimeExecutionMode.BATCH);
-        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        StreamTableEnvironment tableEnv =
+            StreamTableEnvironment.create(env, EnvironmentSettings.inBatchMode());
 
         DataStreamSource<Order> orderSource =
                 new DataStreamSource<>(
